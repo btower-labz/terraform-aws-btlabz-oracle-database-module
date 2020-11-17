@@ -31,7 +31,7 @@ resource "aws_route53_record" "main" {
   type    = "CNAME"
   ttl     = var.r53_ttl
   records = [
-    aws_db_instance.main.endpoint
+    aws_db_instance.main.address
   ]
 }
 
@@ -42,6 +42,20 @@ resource "aws_route53_record" "alias" {
   type    = "CNAME"
   ttl     = var.r53_ttl
   records = [
-    aws_db_instance.main.endpoint
+    aws_db_instance.main.address
   ]
+}
+
+output "r53_name" {
+  description = "R53 instance name"
+  value       = aws_route53_record.main.name
+}
+
+output "r53_fqdn" {
+  description = "R53 instance FQDN"
+  value       = aws_route53_record.main.fqdn
+}
+
+output "r53_endpoint" {
+  value = format("%s:%s", aws_route53_record.main.fqdn, aws_db_instance.main.port)
 }

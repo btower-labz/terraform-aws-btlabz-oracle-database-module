@@ -1,3 +1,7 @@
+locals {
+  # See: https://github.com/hashicorp/terraform-provider-aws/issues/84
+  database_name = upper(var.database_name)
+}
 
 resource "aws_db_instance" "main" {
 
@@ -6,7 +10,7 @@ resource "aws_db_instance" "main" {
   identifier        = var.use_prefix ? null : var.name
   identifier_prefix = var.use_prefix ? format("%s-", var.name) : null
   instance_class    = var.instance_class
-  name              = var.database_name
+  name              = local.database_name
 
   #### Engine and licensing ####
 
@@ -27,15 +31,16 @@ resource "aws_db_instance" "main" {
   auto_minor_version_upgrade  = var.auto_minor_version_upgrade
   allow_major_version_upgrade = var.allow_major_version_upgrade
   apply_immediately           = var.apply_immediately
-  #maintenance_window    = var.maintenance_window
-  deletion_protection = var.deletion_protection
-  #option_group_name = var.option_group_name
-  #var.parameter_group_name = var.parameter_group_name
+  maintenance_window          = var.maintenance_window == "" ? null : var.maintenance_window
+  deletion_protection         = var.deletion_protection
+
+  option_group_name    = var.option_group_name == "" ? null : var.option_group_name
+  parameter_group_name = var.parameter_group_name == "" ? null : var.parameter_group_name
 
   #### Backup and snapshots ####
 
   backup_retention_period   = var.backup_retention_period
-  backup_window             = var.preferred_backup_window
+  backup_window             = var.preferred_backup_window == "" ? null : var.preferred_backup_window
   copy_tags_to_snapshot     = var.copy_tags_to_snapshot
   delete_automated_backups  = var.delete_automated_backups
   final_snapshot_identifier = local.final_snapshot_identifier

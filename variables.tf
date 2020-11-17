@@ -40,10 +40,10 @@ variable "preferred_backup_window" {
   default     = "02:00-03:00"
 }
 
-variable "preferred_maintenance_window" {
+variable "maintenance_window" {
   description = "When to perform DB maintenance"
   type        = string
-  default     = "sun:05:00-sun:06:00"
+  default     = "sat:05:00-sat:06:00"
 }
 
 variable "apply_immediately" {
@@ -117,4 +117,16 @@ variable "instance_class" {
   description = "The RDS instance class."
   type        = string
   default     = "db.t3.small"
+}
+
+variable "option_group_name" {
+  description = "Name of the DB option group to associate."
+  type        = string
+  default     = ""
+}
+
+variable "parameter_group_name" {
+  description = "Name of the DB parameter group to associate."
+  type        = string
+  default     = ""
 }
